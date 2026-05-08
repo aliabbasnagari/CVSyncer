@@ -3,6 +3,7 @@ from openai import OpenAI
 
 API_KEY = os.getenv("OPENAI_API_KEY")
 BASE_URL = os.getenv("OPENAI_API_BASE_URL") 
+MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
 client = OpenAI(api_key=API_KEY, base_url=BASE_URL) if BASE_URL else OpenAI(api_key=API_KEY)
 
@@ -28,7 +29,7 @@ Give:
     print("Prompt:", prompt)
 
     response = client.chat.completions.create(
-        model="gpt-4o-mini", messages=[{"role": "user", "content": prompt}]
+        model=MODEL, messages=[{"role": "user", "content": prompt}]
     )
 
     print("Response:", response.choices[0].message.content)

@@ -124,6 +124,7 @@ Both services include a `Dockerfile`. Run them individually or wire up with Dock
 |---|---|
 | `OPENAI_API_KEY` | Your OpenAI API key |
 | `OPENAI_API_BASE_URL` | (Optional) Custom OpenAI-compatible base URL |
+| `OPENAI_MODEL` | (Optional) Model to use (default: `gpt-4o-mini`) |
 
 ### Frontend (`.env`)
 | Variable | Description |
