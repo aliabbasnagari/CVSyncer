@@ -1,26 +1,87 @@
+# =====================
 # Environment variables
+# =====================
 .env
 .env.*
 !.env.example
 
-# Dependencies
+# =====================
+# Node / Frontend
+# =====================
 node_modules/
-
-# Build output
 dist/
-build/
+dist-ssr/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# OS files
-.DS_Store
-
-# Python (for backend)
+# =====================
+# Python / Backend
+# =====================
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
-.venv/
+*.pyd
+*.so
+*.egg-info/
+build/
+.eggs/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyright/
+
+# =====================
+# Virtual environments
+# =====================
 venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
 
+# =====================
+# Docker
+# =====================
+*.override.yml
 
-# Ignore any file containing ".bkp" backup files
-*.bkp*
-*.bkp*.*
+# =====================
+# Logs
+# =====================
+*.log
+logs/
+
+# =====================
+# Backup files
+# =====================
+*.bkp
+*.bkp.*
+
+# =====================
+# IDEs / Editors
+# =====================
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*~
+
+# =====================
+# OS files
+# =====================
+.DS_Store
+Thumbs.db

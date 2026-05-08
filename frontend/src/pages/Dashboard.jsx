@@ -1,12 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { analyzeResume, optimizeCV } from "../api";
 import UploadBox from "../components/UploadBox";
 import ResultCard from "../components/ResultCard";
-import CVEditor from "../components/CVEditor";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [result, setResult] = useState(null);
-  const [optimizedCV, setOptimizedCV] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentFile, setCurrentFile] = useState(null);
   const [currentJobDesc, setCurrentJobDesc] = useState(null);
@@ -25,7 +25,13 @@ export default function Dashboard() {
     setIsLoading(true);
     try {
       const data = await optimizeCV(currentFile, currentJobDesc);
-      setOptimizedCV(data);
+      if (data.success) {
+        navigate("/editor", {
+          state: { latexSource: data.latex, pdfBase64: data.pdf_base64 },
+        });
+      } else {
+        alert("Failed to generate optimized CV. Please try again.");
+      }
     } catch (err) {
       console.error("Optimization failed:", err);
       alert("Failed to generate optimized CV. Please try again.");
@@ -53,19 +59,16 @@ export default function Dashboard() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
-                Generating your optimized CV...
+                Generating your optimized CV…
               </div>
               <p className="text-gray-500 text-sm mt-2">
                 This may take up to 30 seconds as we compile your perfect resume
               </p>
             </div>
           )}
-
-          {optimizedCV && optimizedCV.success && (
-            <CVEditor latexSource={optimizedCV.latex} pdfBase64={optimizedCV.pdf_base64} />
-          )}
         </>
       )}
     </div>
   );
 }
+
