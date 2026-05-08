@@ -1,0 +1,21 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# OS files
+.DS_Store
+
+# Python (for backend)
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
