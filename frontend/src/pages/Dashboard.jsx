@@ -27,7 +27,7 @@ export default function Dashboard() {
       const data = await optimizeCV(currentFile, currentJobDesc);
       if (data.success) {
         navigate("/editor", {
-          state: { latexSource: data.latex, pdfBase64: data.pdf_base64 },
+          state: { typstSource: data.typst, pdfBase64: data.pdf_base64 },
         });
       } else {
         alert("Failed to generate optimized CV. Please try again.");

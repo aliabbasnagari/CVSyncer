@@ -24,12 +24,12 @@ export const optimizeCV = async (resume, jobDescription) => {
   return res.data;
 };
 
-export const compileLatex = async (latexCode) => {
-  const blob = new Blob([latexCode], { type: "text/plain" });
+export const compileTypst = async (typstCode) => {
+  const blob = new Blob([typstCode], { type: "text/plain" });
   const formData = new FormData();
-  formData.append("latex_code", blob, "resume.tex");
+  formData.append("typst_code", blob, "resume.typ");
 
-  const res = await api.post("/compile-latex", formData, {
+  const res = await api.post("/compile-typst", formData, {
     responseType: "blob",
   });
   return res.data;

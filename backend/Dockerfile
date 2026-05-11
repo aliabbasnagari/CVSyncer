@@ -1,21 +1,11 @@
 FROM python:3.11-slim
 
-RUN apt-get update && apt-get install -y \
-    texlive-xetex \
-    texlive-latex-recommended \
-    texlive-fonts-recommended \
-    fontconfig \
-    fonts-dejavu \
-    fonts-liberation \
-    fonts-noto \
-    fonts-noto-cjk \
- && fc-cache -f -v \
- && rm -rf /var/lib/apt/lists/*
-
 WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install -r requirements.txt
 
 COPY . .
 

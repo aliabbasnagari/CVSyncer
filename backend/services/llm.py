@@ -36,11 +36,11 @@ Give:
     return response.choices[0].message.content
 
 
-def generate_optimized_latex(resume_text: str, job_description: str):
+def generate_optimized_typst(resume_text: str, job_description: str):
     prompt = f"""
-You are an expert LaTeX resume writer and ATS optimization specialist.
+You are an expert Typst resume writer and ATS optimization specialist.
 
-Task: Create a **professional, clean, one-page LaTeX resume** that achieves near 100% match with the job description.
+Task: Create a **professional, clean, one-page Typst resume** that achieves near 100% match with the job description.
 
 Original Resume:
 {resume_text}
@@ -49,16 +49,16 @@ Job Description:
 {job_description}
 
 Requirements:
-- Use a modern, clean, ATS-friendly LaTeX template (single column preferred).
+- Use modern, clean, ATS-friendly Typst markup (single column preferred).
 - Incorporate all relevant keywords from the JD naturally.
 - Reorder/rephrase experience and skills to prioritize JD requirements.
-- Keep it to **one page**.
-- Use standard packages only: geometry, fontspec or lmodern, hyperref, enumitem, etc.
+- Keep it to **one page** (use `#set page(paper: "a4", margin: 1.5cm)` or similar).
 - Include sections: Contact, Summary, Experience, Education, Skills, Projects (if relevant).
-- Make the LaTeX code complete and compilable with xelatex.
-- setmainfont TeX Gyre Heros.
+- Use Typst syntax: `#set text(font: "DejaVu Sans", size: 10pt)`, `= Heading`, `== Subheading`, `- bullet`, `#link(...)`, etc.
+- Only rely on built-in Typst features (no external packages / no `#import "@preview/..."`).
+- Make the Typst code complete and compilable as-is with the `typst` CLI / Python bindings.
 
-Return ONLY the full LaTeX code wrapped in ```latex ... ```
+Return ONLY the full Typst code wrapped in ```typst ... ```
 """
 
     response = client.chat.completions.create(
@@ -67,12 +67,12 @@ Return ONLY the full LaTeX code wrapped in ```latex ... ```
         temperature=0.7,
     )
 
-    latex_code = response.choices[0].message.content
+    typst_code = response.choices[0].message.content
 
     # Extract code if wrapped
-    if "```latex" in latex_code:
-        latex_code = latex_code.split("```latex")[1].split("```")[0].strip()
-    elif "```" in latex_code:
-        latex_code = latex_code.split("```")[1].strip()
+    if "```typst" in typst_code:
+        typst_code = typst_code.split("```typst")[1].split("```")[0].strip()
+    elif "```" in typst_code:
+        typst_code = typst_code.split("```")[1].strip()
 
-    return latex_code
+    return typst_code

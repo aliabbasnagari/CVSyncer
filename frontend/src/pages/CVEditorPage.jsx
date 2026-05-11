@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { compileLatex } from "../api";
+import { compileTypst } from "../api";
 
 export default function CVEditorPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { latexSource, pdfBase64 } = location.state || {};
+  const { typstSource, pdfBase64 } = location.state || {};
 
-  const [latex, setLatex] = useState(latexSource || "");
+  const [typstCode, setTypstCode] = useState(typstSource || "");
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isCompiling, setIsCompiling] = useState(false);
   const [error, setError] = useState(null);
@@ -38,10 +38,10 @@ export default function CVEditorPage() {
     }
   }, [pdfBase64]);
 
-  // Update line count when latex changes
+  // Update line count when source changes
   useEffect(() => {
-    setLineCount(latex.split("\n").length);
-  }, [latex]);
+    setLineCount(typstCode.split("\n").length);
+  }, [typstCode]);
 
   // Sync line numbers scroll with textarea
   const syncScroll = () => {
@@ -50,11 +50,11 @@ export default function CVEditorPage() {
     }
   };
 
-  const compileToPdf = async (latexCode) => {
+  const compileToPdf = async (source) => {
     setIsCompiling(true);
     setError(null);
     try {
-      const pdfBlob = await compileLatex(latexCode);
+      const pdfBlob = await compileTypst(source);
       const url = URL.createObjectURL(pdfBlob);
       setPreviewUrl(url);
       if (iframeRef.current) {
@@ -119,14 +119,14 @@ export default function CVEditorPage() {
         {/* Title */}
         <div className="flex items-center gap-2 flex-1">
           <div className="w-2 h-2 rounded-full bg-blue-500" />
-          <h1 className="text-sm font-semibold text-white">CV LaTeX Editor</h1>
+          <h1 className="text-sm font-semibold text-white">CV Typst Editor</h1>
           <span className="text-xs text-gray-500 ml-2">{lineCount} lines</span>
         </div>
 
         {/* Actions */}
         <div className="flex items-center gap-2">
           <button
-            onClick={() => compileToPdf(latex)}
+            onClick={() => compileToPdf(typstCode)}
             disabled={isCompiling}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 disabled:text-gray-500 text-white text-sm px-4 py-1.5 rounded-lg font-medium transition-colors"
           >
@@ -179,7 +179,7 @@ export default function CVEditorPage() {
 
       {/* Split Panel */}
       <div ref={containerRef} className="flex flex-1 overflow-hidden">
-        {/* Left: LaTeX Editor */}
+        {/* Left: Typst Editor */}
         <div
           style={{ width: `${splitPos}%` }}
           className="flex flex-col overflow-hidden"
@@ -187,7 +187,7 @@ export default function CVEditorPage() {
           {/* Panel Header */}
           <div className="flex items-center gap-2 px-4 py-2 bg-gray-900/80 border-b border-gray-800 shrink-0">
             <div className="w-2.5 h-2.5 rounded-full bg-amber-500/70" />
-            <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">LaTeX Source</span>
+            <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Typst Source</span>
             <div className="ml-auto flex gap-1.5">
               <div className="w-2.5 h-2.5 rounded-full bg-gray-700" />
               <div className="w-2.5 h-2.5 rounded-full bg-gray-700" />
@@ -217,8 +217,8 @@ export default function CVEditorPage() {
             {/* Textarea */}
             <textarea
               ref={textareaRef}
-              value={latex}
-              onChange={(e) => setLatex(e.target.value)}
+              value={typstCode}
+              onChange={(e) => setTypstCode(e.target.value)}
               onScroll={syncScroll}
               className="flex-1 bg-transparent text-gray-200 resize-none outline-none font-mono text-sm overflow-auto"
               style={{
@@ -234,8 +234,8 @@ export default function CVEditorPage() {
 
           {/* Status bar */}
           <div className="shrink-0 flex items-center gap-4 px-4 py-1.5 bg-gray-900/80 border-t border-gray-800">
-            <span className="text-xs text-gray-600">LaTeX</span>
-            <span className="text-xs text-gray-600">{latex.length} chars</span>
+            <span className="text-xs text-gray-600">Typst</span>
+            <span className="text-xs text-gray-600">{typstCode.length} chars</span>
             <span className="text-xs text-gray-600 ml-auto">Drag divider to resize</span>
           </div>
         </div>
@@ -280,8 +280,8 @@ export default function CVEditorPage() {
                   <p className="text-xs text-gray-600 mt-1">Click <span className="text-blue-400">Compile</span> to generate the PDF</p>
                 </div>
                 <button
-                  onClick={() => compileToPdf(latex)}
-                  disabled={isCompiling || !latex.trim()}
+                  onClick={() => compileToPdf(typstCode)}
+                  disabled={isCompiling || !typstCode.trim()}
                   className="flex items-center gap-2 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-600/40 text-blue-400 text-sm px-5 py-2 rounded-lg transition-colors disabled:opacity-40"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
