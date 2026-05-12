@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { analyzeResume, optimizeCV } from "../api";
 import UploadBox from "../components/UploadBox";
@@ -10,21 +10,27 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentFile, setCurrentFile] = useState(null);
   const [currentJobDesc, setCurrentJobDesc] = useState(null);
+  const resultRef = useRef(null);
 
   const handleAnalyze = async (file, jobText) => {
     const data = await analyzeResume(file, jobText);
     setResult(data);
-    setOptimizedCV(null);
     setCurrentFile(file);
     setCurrentJobDesc(jobText);
   };
+
+  useEffect(() => {
+    if (result && resultRef.current) {
+      resultRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [result]);
 
   const handleOptimize = async () => {
     if (!currentFile || !currentJobDesc) return;
 
     setIsLoading(true);
     try {
-      const data = await optimizeCV(currentFile, currentJobDesc);
+      const data = await optimizeCV(currentFile, currentJobDesc, result?.feedback);
       if (data.success) {
         navigate("/editor", {
           state: { typstSource: data.typst, pdfBase64: data.pdf_base64 },
@@ -43,14 +49,14 @@ export default function Dashboard() {
   return (
     <div className="p-10 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">
-        AI Resume Screener
+        CVSyncer
       </h1>
 
       <UploadBox onAnalyze={handleAnalyze} />
 
       {result && (
-        <>
-          <ResultCard data={result} onOptimize={handleOptimize} />
+        <div ref={resultRef}>
+          <ResultCard data={result} onOptimize={handleOptimize} isOptimizing={isLoading} />
 
           {isLoading && (
             <div className="mt-8 bg-gray-800 p-6 rounded-xl text-center">
@@ -66,7 +72,7 @@ export default function Dashboard() {
               </p>
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );

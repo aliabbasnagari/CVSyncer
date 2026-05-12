@@ -119,7 +119,7 @@ export default function CVEditorPage() {
         {/* Title */}
         <div className="flex items-center gap-2 flex-1">
           <div className="w-2 h-2 rounded-full bg-blue-500" />
-          <h1 className="text-sm font-semibold text-white">CV Typst Editor</h1>
+          <h2 className="text-sm font-semibold text-white">CV Typst Editor</h2>
           <span className="text-xs text-gray-500 ml-2">{lineCount} lines</span>
         </div>
 

@@ -15,10 +15,13 @@ export const analyzeResume = async (resume, jobDescription) => {
   return res.data;
 };
 
-export const optimizeCV = async (resume, jobDescription) => {
+export const optimizeCV = async (resume, jobDescription, feedback) => {
   const formData = new FormData();
   formData.append("resume", resume);
   formData.append("job_description", jobDescription);
+  if (feedback) {
+    formData.append("feedback", feedback);
+  }
 
   const res = await api.post("/optimize-cv", formData);
   return res.data;
